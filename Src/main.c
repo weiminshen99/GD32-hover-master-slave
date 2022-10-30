@@ -1,7 +1,7 @@
 /*
-* This file is part of the hoverboard-firmware-hack-V2 project. The 
+* This file is part of the hoverboard-firmware-hack-V2 project. The
 * firmware is used to hack the generation 2 board of the hoverboard.
-* These new hoverboards have no mainboard anymore. They consist of 
+* These new hoverboards have no mainboard anymore. They consist of
 * two Sensorboards which have their own BLDC-Bridge per Motor and an
 * ARM Cortex-M3 processor GD32F130C8.
 *
@@ -10,8 +10,8 @@
 * Copyright (C) 2018 Kai Liebich
 * Copyright (C) 2018 Christoph Lehnert
 *
-* The program is based on the hoverboard project by Niklas Fauth. The 
-* structure was tried to be as similar as possible, so that everyone 
+* The program is based on the hoverboard project by Niklas Fauth. The
+* structure was tried to be as similar as possible, so that everyone
 * could find a better way through the code.
 *
 * This program is free software: you can redistribute it and/or modify
@@ -47,30 +47,30 @@
 //#include "arm_math.h"
 
 #ifdef MASTER
-int32_t steer = 0; 												// global variable for steering. -1000 to 1000
-int32_t speed = 0; 												// global variable for speed.    -1000 to 1000
-FlagStatus activateWeakening = RESET;			// global variable for weakening
-FlagStatus beepsBackwards = RESET;  			// global variable for beeps backwards
-			
-extern uint8_t buzzerFreq;    						// global variable for the buzzer pitch. can be 1, 2, 3, 4, 5, 6, 7...
-extern uint8_t buzzerPattern; 						// global variable for the buzzer pattern. can be 1, 2, 3, 4, 5, 6, 7...
-			
-extern float batteryVoltage; 							// global variable for battery voltage
-extern float currentDC; 									// global variable for current dc
-extern float realSpeed; 									// global variable for real Speed
-uint8_t slaveError = 0;										// global variable for slave error
-	
-extern FlagStatus timedOut;								// Timeoutvariable set by timeout timer
+int32_t steer = 0;				// global variable for steering. -1000 to 1000
+int32_t speed = 0;				// global variable for speed.    -1000 to 1000
+FlagStatus activateWeakening = RESET;		// global variable for weakening
+FlagStatus beepsBackwards = RESET;  		// global variable for beeps backwards
+
+extern uint8_t buzzerFreq;    			// global variable for the buzzer pitch. can be 1, 2, 3, 4, 5, 6, 7...
+extern uint8_t buzzerPattern; 			// global variable for the buzzer pattern. can be 1, 2, 3, 4, 5, 6, 7...
+
+extern float batteryVoltage; 			// global variable for battery voltage
+extern float currentDC; 			// global variable for current dc
+extern float realSpeed; 			// global variable for real Speed
+uint8_t slaveError = 0;				// global variable for slave error
+
+extern FlagStatus timedOut;			// Timeoutvariable set by timeout timer
 
 uint32_t inactivity_timeout_counter = 0;	// Inactivity counter
-uint32_t steerCounter = 0;								// Steer counter for setting update rate
+uint32_t steerCounter = 0;			// Steer counter for setting update rate
 
 void ShowBatteryState(uint32_t pin);
 void BeepsBackwards(FlagStatus beepsBackwards);
 void ShutOff(void);
 #endif
 
-const float lookUpTableAngle[181] =  
+const float lookUpTableAngle[181] =
 {
   -1,
   -0.937202577,
@@ -268,7 +268,7 @@ int main (void)
 	int16_t sendSlaveValue = 0;
 	uint8_t sendSlaveIdentifier = 0;
 	int8_t index = 8;
-  int16_t pwmSlave = 0;
+	int16_t pwmSlave = 0;
 	int16_t pwmMaster = 0;
 	int16_t scaledSpeed = 0;
 	int16_t scaledSteer  = 0;
@@ -276,39 +276,39 @@ int main (void)
 	float steerAngle = 0;
 	float xScale = 0;
 #endif
-	
-	//SystemClock_Config();
+
+  //SystemClock_Config();
   SystemCoreClockUpdate();
   SysTick_Config(SystemCoreClock / 100);
-	
+
 	// Init watchdog
 	if (Watchdog_init() == ERROR)
 	{
 		// If an error accours with watchdog initialization do not start device
 		while(1);
 	}
-	
+
 	// Init Interrupts
 	Interrupt_init();
-	
+
 	// Init timeout timer
 	TimeoutTimer_init();
-	
+
 	// Init GPIOs
 	GPIO_init();
-	
+
 	// Activate self hold direct after GPIO-init
 	gpio_bit_write(SELF_HOLD_PORT, SELF_HOLD_PIN, SET);
 
 	// Init usart master slave
 	USART_MasterSlave_init();
-	
+
 	// Init ADC
 	ADC_init();
-	
+
 	// Init PWM
 	PWM_init();
-	
+
 	// Device has 1,6 seconds to do all the initialization
 	// afterwards watchdog will be fired
 	fwdgt_counter_reload();
@@ -320,10 +320,10 @@ int main (void)
 	// Startup-Sound
 	for (; index >= 0; index--)
 	{
-    buzzerFreq = index;
-    Delay(10);
-  }
-  buzzerFreq = 0;
+	    buzzerFreq = index;
+	    Delay(10);
+	}
+  	buzzerFreq = 0;
 
 	// Wait until button is pressed
 	while (gpio_input_bit_get(BUTTON_PORT, BUTTON_PIN))
@@ -336,21 +336,21 @@ int main (void)
   while(1)
 	{
 #ifdef MASTER
-		steerCounter++;	
+		steerCounter++;
 		if ((steerCounter % 2) == 0)
-		{	
+		{
 			// Request steering data
 			SendSteerDevice();
 		}
-		
+
 		// Calculate expo rate for less steering with higher speeds
 		expo = MAP((float)ABS(speed), 0, 1000, 1, 0.5);
-		
-	  // Each speedvalue or steervalue between 50 and -50 means absolutely no pwm
+
+	 	// Each speedvalue or steervalue between 50 and -50 means absolutely no pwm
 		// -> to get the device calm 'around zero speed'
 		scaledSpeed = speed < 50 && speed > -50 ? 0 : CLAMP(speed, -1000, 1000) * SPEED_COEFFICIENT;
 		scaledSteer = steer < 50 && steer > -50 ? 0 : CLAMP(steer, -1000, 1000) * STEER_COEFFICIENT * expo;
-		
+
 		// Map to an angle of 180 degress to 0 degrees for array access (means angle -90 to 90 degrees)
 		steerAngle = MAP((float)scaledSteer, -1000, 1000, 180, 0);
 		xScale = lookUpTableAngle[(uint16_t)steerAngle];
@@ -366,19 +366,19 @@ int main (void)
 			pwmMaster = CLAMP(scaledSpeed, -1000, 1000);
 			pwmSlave = CLAMP(xScale * pwmMaster, -1000, 1000);
 		}
-		
+
 		// Read charge state
 		chargeStateLowActive = gpio_input_bit_get(CHARGE_STATE_PORT, CHARGE_STATE_PIN);
-		
+
 		// Enable is depending on charger is connected or not
 		enable = chargeStateLowActive;
-		
+
 		// Enable channel output
 		SetEnable(enable);
 
 		// Decide if slave will be enabled
 		enableSlave = (enable == SET && timedOut == RESET) ? SET : RESET;
-		
+
 		// Decide which process value has to be sent
 		switch(sendSlaveIdentifier)
 		{
@@ -394,24 +394,24 @@ int main (void)
 				default:
 					break;
 		}
-		
-    // Set output
+
+		// Set output
 		SetPWM(pwmMaster);
 		SendSlave(-pwmSlave, enableSlave, RESET, chargeStateLowActive, sendSlaveIdentifier, sendSlaveValue);
-		
+
 		// Increment identifier
 		sendSlaveIdentifier++;
 		if (sendSlaveIdentifier > 2)
 		{
 			sendSlaveIdentifier = 0;
 		}
-		
+
 		// Show green battery symbol when battery level BAT_LOW_LVL1 is reached
     if (batteryVoltage > BAT_LOW_LVL1)
 		{
 			// Show green battery light
 			ShowBatteryState(LED_GREEN);
-			
+
 			// Beeps backwards
 			BeepsBackwards(beepsBackwards);
 		}
@@ -420,7 +420,7 @@ int main (void)
 		{
 			// Show orange battery light
 			ShowBatteryState(LED_ORANGE);
-			
+
       buzzerFreq = 5;
       buzzerPattern = 8;
     }
@@ -429,7 +429,7 @@ int main (void)
 		{
 			// Show red battery light
 			ShowBatteryState(LED_RED);
-			
+
       buzzerFreq = 5;
       buzzerPattern = 1;
     }
@@ -449,7 +449,7 @@ int main (void)
       while (gpio_input_bit_get(BUTTON_PORT, BUTTON_PIN)) {}
 			ShutOff();
     }
-		
+
 		// Calculate inactivity timeout (Except, when charger is active -> keep device running)
     if (ABS(pwmMaster) > 50 || ABS(pwmSlave) > 50 || !chargeStateLowActive)
 		{
@@ -459,16 +459,16 @@ int main (void)
 		{
       inactivity_timeout_counter++;
     }
-		
+
 		// Shut off device after INACTIVITY_TIMEOUT in minutes
     if (inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 60 * 1000) / (DELAY_IN_MAIN_LOOP + 1))
-		{ 
+		{
       ShutOff();
     }
-#endif	
+#endif
 
 		Delay(DELAY_IN_MAIN_LOOP);
-		
+
 		// Reload watchdog (watchdog fires after 1,6 seconds)
 		fwdgt_counter_reload();
   }
@@ -489,17 +489,17 @@ void ShutOff(void)
 		Delay(10);
 	}
 	buzzerFreq = 0;
-	
+
 	// Send shut off command to slave
 	SendSlave(0, RESET, SET, RESET, RESET, RESET);
-	
+
 	// Disable usart
 	usart_deinit(USART_MASTERSLAVE);
-	
+
 	// Set pwm and enable to off
 	SetEnable(RESET);
 	SetPWM(0);
-	
+
 	gpio_bit_write(SELF_HOLD_PORT, SELF_HOLD_PIN, RESET);
 	while(1)
 	{
@@ -527,7 +527,7 @@ void BeepsBackwards(FlagStatus beepsBackwards)
 	if (beepsBackwards == SET && speed < -50)
 	{
 		buzzerFreq = 5;
-    buzzerPattern = 4;
+    		buzzerPattern = 4;
 	}
 	else
 	{
