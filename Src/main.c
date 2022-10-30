@@ -277,14 +277,13 @@ int main (void)
 	float xScale = 0;
 #endif
 
-  //SystemClock_Config();
-  SystemCoreClockUpdate();
-  SysTick_Config(SystemCoreClock / 100);
+	//SystemClock_Config();
+	SystemCoreClockUpdate();
+	SysTick_Config(SystemCoreClock / 100);
 
 	// Init watchdog
 	if (Watchdog_init() == ERROR)
-	{
-		// If an error accours with watchdog initialization do not start device
+	{// If an error accours with watchdog initialization do not start device
 		while(1);
 	}
 
@@ -391,8 +390,8 @@ int main (void)
 			case 2:
 				sendSlaveValue = realSpeed * 100;
 				break;
-				default:
-					break;
+			default:
+				break;
 		}
 
 		// Set output
@@ -407,70 +406,75 @@ int main (void)
 		}
 
 		// Show green battery symbol when battery level BAT_LOW_LVL1 is reached
-    if (batteryVoltage > BAT_LOW_LVL1)
+    		if (batteryVoltage > BAT_LOW_LVL1)
 		{
 			// Show green battery light
 			ShowBatteryState(LED_GREEN);
-
 			// Beeps backwards
 			BeepsBackwards(beepsBackwards);
 		}
 		// Make silent sound and show orange battery symbol when battery level BAT_LOW_LVL2 is reached
-    else if (batteryVoltage > BAT_LOW_LVL2 && batteryVoltage < BAT_LOW_LVL1)
-		{
-			// Show orange battery light
+    		else if (batteryVoltage > BAT_LOW_LVL2 && batteryVoltage < BAT_LOW_LVL1)
+		{	// Show orange battery light
 			ShowBatteryState(LED_ORANGE);
-
-      buzzerFreq = 5;
-      buzzerPattern = 8;
-    }
+      			buzzerFreq = 5;
+      			buzzerPattern = 8;
+    		}
 		// Make even more sound and show red battery symbol when battery level BAT_LOW_DEAD is reached
 		else if  (batteryVoltage > BAT_LOW_DEAD && batteryVoltage < BAT_LOW_LVL2)
-		{
-			// Show red battery light
+		{	// Show red battery light
 			ShowBatteryState(LED_RED);
-
-      buzzerFreq = 5;
-      buzzerPattern = 1;
-    }
+      			buzzerFreq = 5;
+      			buzzerPattern = 1;
+    		}
 		// Shut device off, when battery is dead
 		else if (batteryVoltage < BAT_LOW_DEAD)
 		{
-      ShutOff();
-    }
+      			ShutOff();
+    		}
 		else
 		{
 			ShutOff();
-    }
+    		}
 
 		// Shut device off when button is pressed
 		if (gpio_input_bit_get(BUTTON_PORT, BUTTON_PIN))
 		{
-      while (gpio_input_bit_get(BUTTON_PORT, BUTTON_PIN)) {}
+      			while (gpio_input_bit_get(BUTTON_PORT, BUTTON_PIN)) {}
 			ShutOff();
-    }
+    		}
 
 		// Calculate inactivity timeout (Except, when charger is active -> keep device running)
-    if (ABS(pwmMaster) > 50 || ABS(pwmSlave) > 50 || !chargeStateLowActive)
+    		if (ABS(pwmMaster) > 50 || ABS(pwmSlave) > 50 || !chargeStateLowActive)
 		{
-      inactivity_timeout_counter = 0;
-    }
+      			inactivity_timeout_counter = 0;
+    		}
 		else
 		{
-      inactivity_timeout_counter++;
-    }
+      			inactivity_timeout_counter++;
+    		}
 
 		// Shut off device after INACTIVITY_TIMEOUT in minutes
-    if (inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 60 * 1000) / (DELAY_IN_MAIN_LOOP + 1))
+    		if (inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 60 * 1000) / (DELAY_IN_MAIN_LOOP + 1))
 		{
-      ShutOff();
-    }
-#endif
+      			ShutOff();
+    		}
+#endif // end MASTER
 
 		Delay(DELAY_IN_MAIN_LOOP);
 
 		// Reload watchdog (watchdog fires after 1,6 seconds)
 		fwdgt_counter_reload();
+
+#ifdef SLAVE	// for testing purpose to see if slave is alive
+        	ShowBatteryState(LED_GREEN);
+        	Delay(1000);
+        	ShowBatteryState(LED_ORANGE);
+        	Delay(1000);
+        	ShowBatteryState(LED_RED);
+        	Delay(1000);
+#endif // end SLAVE
+
   }
 }
 
