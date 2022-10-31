@@ -1,7 +1,7 @@
 /*
-* This file is part of the hoverboard-firmware-hack-V2 project. The 
+* This file is part of the hoverboard-firmware-hack-V2 project. The
 * firmware is used to hack the generation 2 board of the hoverboard.
-* These new hoverboards have no mainboard anymore. They consist of 
+* These new hoverboards have no mainboard anymore. They consist of
 * two Sensorboards which have their own BLDC-Bridge per Motor and an
 * ARM Cortex-M3 processor GD32F130C8.
 *
@@ -10,8 +10,8 @@
 * Copyright (C) 2018 Kai Liebich
 * Copyright (C) 2018 Christoph Lehnert
 *
-* The program is based on the hoverboard project by Niklas Fauth. The 
-* structure was tried to be as similar as possible, so that everyone 
+* The program is based on the hoverboard project by Niklas Fauth. The
+* structure was tried to be as similar as possible, so that everyone
 * could find a better way through the code.
 *
 * This program is free software: you can redistribute it and/or modify
@@ -35,24 +35,24 @@
 
 // ################################################################################
 
-#define MASTER										  	// Select if firmware is for master or slave board
-//#define SLAVE 												// Select if firmware is for master or slave board
+//#define MASTER		// Select if firmware is for master or slave board
+#define SLAVE 			// Select if firmware is for master or slave board
 
 // ################################################################################
 
-#define PWM_FREQ         		16000     // PWM frequency in Hz
-#define DEAD_TIME        		60        // PWM deadtime (60 = 1µs, measured by oscilloscope)
+#define PWM_FREQ         	16000     // PWM frequency in Hz
+#define DEAD_TIME        	60        // PWM deadtime (60 = 1?s, measured by oscilloscope)
 
-#define DC_CUR_LIMIT     		15        // Motor DC current limit in amps
+#define DC_CUR_LIMIT     	15        // Motor DC current limit in amps
 
 // ################################################################################
 
 #define DELAY_IN_MAIN_LOOP 	5         // Delay in ms
 
-#define TIMEOUT_MS          2000      // Time in milliseconds without steering commands before pwm emergency off
+#define TIMEOUT_MS          	2000     // time in ms without steering commands before pwm emergency off
 
 #ifdef MASTER
-#define INACTIVITY_TIMEOUT 	8        	// Minutes of not driving until poweroff (not very precise)
+#define INACTIVITY_TIMEOUT 	8        // Minutes of not driving until poweroff (not very precise)
 
 // ################################################################################
 
@@ -68,7 +68,7 @@
 #endif
 
 // ###### ARMCHAIR ######
-#define FILTER_SHIFT 12 						// Low-pass filter for pwm, rank k=12
+#define FILTER_SHIFT 12 	// Low-pass filter for pwm, rank k=12
 
 #ifdef MASTER
 #define SPEED_COEFFICIENT   -1

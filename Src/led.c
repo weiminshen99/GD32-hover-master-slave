@@ -49,17 +49,17 @@ uint8_t counter_Blue = 0;
 uint8_t setValue_Red = 0;
 uint8_t setValue_Green = 0;
 uint8_t setValue_Blue = 0;
-	
+
 // Variables for HSB calculation
 static uint16_t hueValue = 0;
 static uint8_t saturationValue = 128;
 static uint8_t brightnessValue = 63;
-	
+
 // Variable for LED-program
 static LED_PROGRAM sLEDProgram = LED_OFF;
 
 // Variables for effects
-static uint16_t speedFading = 150;		// Fading-Delay	
+static uint16_t speedFading = 150;		// Fading-Delay
 static uint16_t speedBlink = 1274;		// Blink-Delay
 static uint16_t speedStrobe = 40;			// Strobe-Delay
 
@@ -83,7 +83,7 @@ void CalculateLEDPWM(void)
 	counter_Red++;
 	counter_Green++;
 	counter_Blue++;
-	
+
 	// Set LEDs
 	gpio_bit_write(UPPER_LED_PORT, UPPER_LED_PIN, counter_Red >= setValue_Red ? RESET : SET);
 	gpio_bit_write(LOWER_LED_PORT, LOWER_LED_PIN, counter_Green >= setValue_Green ? RESET : SET);
@@ -180,7 +180,7 @@ LED_PROGRAM GetRGBProgram(void)
 void SetHSBHue(uint16_t hue)
 {
 	uint8_t brightness = 0;
-	
+
 	// Save hue for later
 	if (hue > 764)
 	{
@@ -193,7 +193,7 @@ void SetHSBHue(uint16_t hue)
 
 	// Calculate brightness with the lookuptable
 	brightness = su8BrightnessTable[brightnessValue];  //input: 0..63 output: 0..255
-	
+
 	// Calculate RGB values
 	setValue_Red = ((brightness + 1) * HSBtoRed(hueValue, saturationValue)) >> 8;
 	setValue_Green = ((brightness + 1) * HSBtoGreen(hueValue, saturationValue)) >> 8;
@@ -214,13 +214,13 @@ uint16_t GetHSBHue(void)
 void SetHSBSaturation(uint8_t saturation)
 {
 	uint8_t brightness = 0;
-	
+
 	// Save Saturation for later
 	saturationValue = MAX(saturation, 128);
 
 	// Calculate brightness with the lookuptable
 	brightness = su8BrightnessTable[brightnessValue];  //input: 0..63 output: 0..255
-	
+
 	// Calculate RGB values
 	setValue_Red = ((brightness + 1) * HSBtoRed(hueValue, saturationValue)) >> 8;
 	setValue_Green = ((brightness + 1) * HSBtoGreen(hueValue, saturationValue)) >> 8;
@@ -247,7 +247,7 @@ void SetHSBBrightness(uint8_t brightnessVal)
 
 		// Calculate brightness with the lookuptable
 	brightness = su8BrightnessTable[brightnessValue];  //input: 0..63 output: 0..255
-	
+
 	// Calculate RGB values
 	setValue_Red = ((brightness + 1) * HSBtoRed(hueValue, saturationValue)) >> 8;
 	setValue_Green = ((brightness + 1) * HSBtoGreen(hueValue, saturationValue)) >> 8;

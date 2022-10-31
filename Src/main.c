@@ -255,6 +255,16 @@ const float lookUpTableAngle[181] =
   -1
 };
 
+//----------------------------------------------------------------------------
+// Shows the battery state on the LEDs
+//----------------------------------------------------------------------------
+void ShowBatteryState(uint32_t pin)
+{
+	gpio_bit_write(LED_GREEN_PORT, LED_GREEN, pin == LED_GREEN ? SET : RESET);
+	gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, pin == LED_ORANGE ? SET : RESET);
+	gpio_bit_write(LED_RED_PORT, LED_RED, pin == LED_RED ? SET : RESET);
+}
+
 
 //----------------------------------------------------------------------------
 // MAIN function
@@ -466,17 +476,16 @@ int main (void)
 		// Reload watchdog (watchdog fires after 1,6 seconds)
 		fwdgt_counter_reload();
 
-#ifdef SLAVE	// for testing purpose to see if slave is alive
+		// for testing purpose to see if slave is alive
         	ShowBatteryState(LED_GREEN);
         	Delay(1000);
         	ShowBatteryState(LED_ORANGE);
         	Delay(1000);
         	ShowBatteryState(LED_RED);
         	Delay(1000);
-#endif // end SLAVE
-
   }
 }
+
 
 #ifdef MASTER
 //----------------------------------------------------------------------------
@@ -510,16 +519,6 @@ void ShutOff(void)
 		// Reload watchdog until device is off
 		fwdgt_counter_reload();
 	}
-}
-
-//----------------------------------------------------------------------------
-// Shows the battery state on the LEDs
-//----------------------------------------------------------------------------
-void ShowBatteryState(uint32_t pin)
-{
-	gpio_bit_write(LED_GREEN_PORT, LED_GREEN, pin == LED_GREEN ? SET : RESET);
-	gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, pin == LED_ORANGE ? SET : RESET);
-	gpio_bit_write(LED_RED_PORT, LED_RED, pin == LED_RED ? SET : RESET);
 }
 
 //----------------------------------------------------------------------------
