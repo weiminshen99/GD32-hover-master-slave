@@ -79,7 +79,7 @@ uint16_t CalcCRC(uint8_t *ptr, int count);
 void UpdateUSARTMasterSlaveInput(void)
 {
 	uint8_t character = usartMasterSlave_rx_buf[0];
-	
+
 	// Start character is captured, start record
 	if (character == '/')
 	{
@@ -91,12 +91,12 @@ void UpdateUSARTMasterSlaveInput(void)
 	{
 		sUSARTMasterSlaveRecordBuffer[sUSARTMasterSlaveRecordBufferCounter] = character;
 		sUSARTMasterSlaveRecordBufferCounter++;
-		
+
 		if (sUSARTMasterSlaveRecordBufferCounter >= USART_MASTERSLAVE_RX_BYTES)
 		{
 			sUSARTMasterSlaveRecordBufferCounter = 0;
 			sMasterSlaveRecord = 0;
-			
+
 			// Check input
 			CheckUSARTMasterSlaveInput (sUSARTMasterSlaveRecordBuffer);
 		}
@@ -113,7 +113,7 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 	FlagStatus upperLED = RESET;
 	FlagStatus lowerLED = RESET;
 	FlagStatus mosfetOut = RESET;
-	
+
 	// Auxiliary variables
 	uint8_t byte;
 #endif
@@ -123,7 +123,7 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 	FlagStatus enable = RESET;
 	FlagStatus shutoff = RESET;
 	FlagStatus chargeStateLowActive = SET;
-	
+
 	// Auxiliary variables
 	uint8_t identifier = 0;
 	int16_t value = 0;
@@ -131,28 +131,28 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 #endif
 	// Auxiliary variables
 	uint16_t crc;
-	
+
 	// Check start and stop character
 	if ( USARTBuffer[0] != '/' ||
 		USARTBuffer[USART_MASTERSLAVE_RX_BYTES - 1] != '\n')
 	{
 		return;
 	}
-	
+
 	// Calculate CRC (first bytes except crc and stop byte)
 	crc = CalcCRC(USARTBuffer, USART_MASTERSLAVE_RX_BYTES - 3);
-	
+
 	// Check CRC
 	if ( USARTBuffer[USART_MASTERSLAVE_RX_BYTES - 3] != ((crc >> 8) & 0xFF) ||
 		USARTBuffer[USART_MASTERSLAVE_RX_BYTES - 2] != (crc & 0xFF))
 	{
 		return;
 	}
-	
+
 #ifdef MASTER
 	// Calculate setvalues for LED and mosfets
 	byte = USARTBuffer[1];
-	
+
 	//none = (byte & BIT(7)) ? SET : RESET;
 	//none = (byte & BIT(6)) ? SET : RESET;
 	//none = (byte & BIT(5)) ? SET : RESET;
@@ -161,7 +161,7 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 	mosfetOut = (byte & BIT(2)) ? SET : RESET;
 	lowerLED = (byte & BIT(1)) ? SET : RESET;
 	upperLED = (byte & BIT(0)) ? SET : RESET;
-	
+
 	// Set functions according to the variables
 	gpio_bit_write(MOSFET_OUT_PORT, MOSFET_OUT_PIN, mosfetOut);
 	gpio_bit_write(UPPER_LED_PORT, UPPER_LED_PIN, upperLED);
@@ -170,16 +170,16 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 #ifdef SLAVE
 	// Calculate result pwm value -1000 to 1000
 	pwmSlave = (int16_t)((USARTBuffer[1] << 8) | USARTBuffer[2]);
-	
+
 	// Get identifier
 	identifier = USARTBuffer[3];
-	
+
 	// Calculate result general value
 	value = (int16_t)((USARTBuffer[4] << 8) | USARTBuffer[5]);
-	
+
 	// Calculate setvalues for enable and shutoff
 	byte = USARTBuffer[6];
-	
+
 	shutoff = (byte & BIT(7)) ? SET : RESET;
 	//none = (byte & BIT(6)) ? SET : RESET;
 	//none = (byte & BIT(5)) ? SET : RESET;
@@ -188,16 +188,16 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 	//none = (byte & BIT(2)) ? SET : RESET;
 	chargeStateLowActive = (byte & BIT(1)) ? SET : RESET;
 	enable = (byte & BIT(0)) ? SET : RESET;
-	
+
 	if (shutoff == SET)
 	{
 		// Disable usart
 		usart_deinit(USART_MASTERSLAVE);
-		
+
 		// Set pwm and enable to off
 		SetEnable(RESET);
 		SetPWM(0);
-		
+
 		gpio_bit_write(SELF_HOLD_PORT, SELF_HOLD_PIN, RESET);
 		while(1)
 		{
@@ -205,17 +205,17 @@ void CheckUSARTMasterSlaveInput(uint8_t USARTBuffer[])
 			fwdgt_counter_reload();
 		}
 	}
-	
+
 	// Set functions according to the variables
 	gpio_bit_write(LED_GREEN_PORT, LED_GREEN, chargeStateLowActive == SET ? SET : RESET);
 	gpio_bit_write(LED_RED_PORT, LED_RED, chargeStateLowActive == RESET ? SET : RESET);
 	SetEnable(enable);
 	SetPWM(pwmSlave);
 	CheckGeneralValue(identifier, value);
-	
+
 	// Send answer
 	SendMaster(upperLEDMaster, lowerLEDMaster, mosfetOutMaster, beepsBackwardsMaster);
-	
+
 	// Reset the pwm timout to avoid stopping motors
 	ResetTimeout();
 #endif

@@ -73,7 +73,7 @@ void ResetTimeout(void)
 // -> period of timer13 running with 1kHz -> interrupt every 1ms
 //----------------------------------------------------------------------------
 void TIMER13_IRQHandler(void)
-{	
+{
 	if (timeoutCounter_ms > TIMEOUT_MS)
 	{
 		// First timeout reset all process values
@@ -88,7 +88,7 @@ void TIMER13_IRQHandler(void)
 			SetPWM(0);
 #endif
 		}
-		
+
 		timedOut = SET;
 	}
 	else
@@ -107,11 +107,11 @@ void TIMER13_IRQHandler(void)
 	{
 		hornCounter_ms++;
 	}
-	
+
 	// Update LED program
 	CalculateLEDProgram();
 #endif
-	
+
 	// Clear timer update interrupt flag
 	timer_interrupt_flag_clear(TIMER13, TIMER_INT_UP);
 }
@@ -126,7 +126,7 @@ void TIMER0_BRK_UP_TRG_COM_IRQHandler(void)
 {
 	// Start ADC conversion
 	adc_software_trigger_enable(ADC_REGULAR_CHANNEL);
-	
+
 	// Clear timer update interrupt flag
 	timer_interrupt_flag_clear(TIMER_BLDC, TIMER_INT_UP);
 }
@@ -140,15 +140,15 @@ void DMA_Channel0_IRQHandler(void)
 {
 	// Calculate motor PWMs
 	CalculateBLDC();
-	
+
 	#ifdef SLAVE
 	// Calculates RGB LED
 	CalculateLEDPWM();
 	#endif
-	
+
 	if (dma_interrupt_flag_get(DMA_CH0, DMA_INT_FLAG_FTF))
 	{
-		dma_interrupt_flag_clear(DMA_CH0, DMA_INT_FLAG_FTF);        
+		dma_interrupt_flag_clear(DMA_CH0, DMA_INT_FLAG_FTF);
 	}
 }
 
@@ -170,7 +170,7 @@ void DMA_Channel1_2_IRQHandler(void)
 		// Update USART bluetooth input mechanism
 		UpdateUSARTBluetoothInput();
 #endif
-		dma_interrupt_flag_clear(DMA_CH2, DMA_INT_FLAG_FTF);        
+		dma_interrupt_flag_clear(DMA_CH2, DMA_INT_FLAG_FTF);
 	}
 }
 
@@ -186,8 +186,8 @@ void DMA_Channel3_4_IRQHandler(void)
 	{
 		// Update USART master slave input mechanism
 		UpdateUSARTMasterSlaveInput();
-		
-		dma_interrupt_flag_clear(DMA_CH4, DMA_INT_FLAG_FTF);        
+
+		dma_interrupt_flag_clear(DMA_CH4, DMA_INT_FLAG_FTF);
 	}
 }
 

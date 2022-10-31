@@ -255,16 +255,6 @@ const float lookUpTableAngle[181] =
   -1
 };
 
-//----------------------------------------------------------------------------
-// Shows the battery state on the LEDs
-//----------------------------------------------------------------------------
-void ShowBatteryState(uint32_t pin)
-{
-	gpio_bit_write(LED_GREEN_PORT, LED_GREEN, pin == LED_GREEN ? SET : RESET);
-	gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, pin == LED_ORANGE ? SET : RESET);
-	gpio_bit_write(LED_RED_PORT, LED_RED, pin == LED_RED ? SET : RESET);
-}
-
 
 //----------------------------------------------------------------------------
 // MAIN function
@@ -380,6 +370,7 @@ int main (void)
 		chargeStateLowActive = gpio_input_bit_get(CHARGE_STATE_PORT, CHARGE_STATE_PIN);
 
 		// Enable is depending on charger is connected or not
+
 		enable = chargeStateLowActive;
 
 		// Enable channel output
@@ -476,13 +467,23 @@ int main (void)
 		// Reload watchdog (watchdog fires after 1,6 seconds)
 		fwdgt_counter_reload();
 
+#ifdef SLAVE
 		// for testing purpose to see if slave is alive
-        	ShowBatteryState(LED_GREEN);
+		gpio_bit_write(LED_GREEN_PORT, LED_GREEN, 1 ? SET : RESET);
         	Delay(1000);
-        	ShowBatteryState(LED_ORANGE);
+		gpio_bit_write(LED_GREEN_PORT, LED_GREEN, 0 ? SET : RESET);
+		gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, 1 ? SET : RESET);
         	Delay(1000);
-        	ShowBatteryState(LED_RED);
+		gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, 0 ? SET : RESET);
+		gpio_bit_write(LED_RED_PORT, LED_RED, 1 ? SET : RESET);
         	Delay(1000);
+		gpio_bit_write(LED_RED_PORT, LED_RED, 0 ? SET : RESET);
+
+		SetEnable(SET);	// enable motor on SLAVE
+		SetPWM(100);	// testing BLDC on SLAVE
+
+#endif // end SLAVE
+
   }
 }
 
@@ -520,6 +521,17 @@ void ShutOff(void)
 		fwdgt_counter_reload();
 	}
 }
+
+//----------------------------------------------------------------------------
+// Shows the battery state on the LEDs
+//----------------------------------------------------------------------------
+void ShowBatteryState(uint32_t pin)
+{
+	gpio_bit_write(LED_GREEN_PORT, LED_GREEN, pin == LED_GREEN ? SET : RESET);
+	gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, pin == LED_ORANGE ? SET : RESET);
+	gpio_bit_write(LED_RED_PORT, LED_RED, pin == LED_RED ? SET : RESET);
+}
+
 
 //----------------------------------------------------------------------------
 // Beeps while driving backwards
