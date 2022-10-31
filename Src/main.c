@@ -70,6 +70,8 @@ void BeepsBackwards(FlagStatus beepsBackwards);
 void ShutOff(void);
 #endif
 
+volatile uint32_t main_loop_counter = 0;
+
 const float lookUpTableAngle[181] =
 {
   -1,
@@ -462,28 +464,22 @@ int main (void)
     		}
 #endif // end MASTER
 
+#ifdef SLAVE
+		//toggle GREEN LED
+		//cannot use gpio_bit_toggle(LED_GREEN_PORT,LED_GREEN), that only works for F170_190 not F130
+		gpio_bit_write(LED_GREEN_PORT, LED_GREEN, main_loop_counter % 1000 == 0 ? SET : RESET);
+		SetEnable(SET);	// enable motor on SLAVE
+		SetPWM(250);	// testing BLDC on SLAVE
+#endif // end SLAVE
+
+
+		main_loop_counter++;
+
 		Delay(DELAY_IN_MAIN_LOOP);
 
 		// Reload watchdog (watchdog fires after 1,6 seconds)
+		// so each main loop must be completed within 1.6 second
 		fwdgt_counter_reload();
-
-#ifdef SLAVE
-		// for testing purpose to see if slave is alive
-		gpio_bit_write(LED_GREEN_PORT, LED_GREEN, 1 ? SET : RESET);
-        	Delay(1000);
-		gpio_bit_write(LED_GREEN_PORT, LED_GREEN, 0 ? SET : RESET);
-		gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, 1 ? SET : RESET);
-        	Delay(1000);
-		gpio_bit_write(LED_ORANGE_PORT, LED_ORANGE, 0 ? SET : RESET);
-		gpio_bit_write(LED_RED_PORT, LED_RED, 1 ? SET : RESET);
-        	Delay(1000);
-		gpio_bit_write(LED_RED_PORT, LED_RED, 0 ? SET : RESET);
-
-		SetEnable(SET);	// enable motor on SLAVE
-		SetPWM(100);	// testing BLDC on SLAVE
-
-#endif // end SLAVE
-
   }
 }
 
