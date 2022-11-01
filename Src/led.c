@@ -61,7 +61,7 @@ static LED_PROGRAM sLEDProgram = LED_OFF;
 // Variables for effects
 static uint16_t speedFading = 150;		// Fading-Delay
 static uint16_t speedBlink = 1274;		// Blink-Delay
-static uint16_t speedStrobe = 40;			// Strobe-Delay
+static uint16_t speedStrobe = 40;		// Strobe-Delay
 
 // Counter for effects
 static uint16_t fadingCounter = 0;

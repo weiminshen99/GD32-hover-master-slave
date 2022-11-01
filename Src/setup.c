@@ -40,7 +40,7 @@
 timer_parameter_struct timeoutTimer_paramter_struct;
 
 // PWM timer Parameter structs
-timer_parameter_struct timerBldc_paramter_struct;	
+timer_parameter_struct timerBldc_paramter_struct;
 timer_break_parameter_struct timerBldc_break_parameter_struct;
 timer_oc_parameter_struct timerBldc_oc_parameter_struct;
 
@@ -58,7 +58,7 @@ extern adc_buf_t adc_buffer;
 //----------------------------------------------------------------------------
 void Interrupt_init(void)
 {
-  // Set IRQ priority configuration
+	// Set IRQ priority configuration
 	nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
 }
 
@@ -104,10 +104,10 @@ void TimeoutTimer_init(void)
 	// Set up the basic parameter struct for the timer
 	// Update event will be fired every 1ms
 	timeoutTimer_paramter_struct.counterdirection 	= TIMER_COUNTER_UP;
-	timeoutTimer_paramter_struct.prescaler 					= 0;
-	timeoutTimer_paramter_struct.alignedmode 				= TIMER_COUNTER_CENTER_DOWN;
-	timeoutTimer_paramter_struct.period							= 72000000 / 2 / TIMEOUT_FREQ;
-	timeoutTimer_paramter_struct.clockdivision 			= TIMER_CKDIV_DIV1;
+	timeoutTimer_paramter_struct.prescaler 		= 0;
+	timeoutTimer_paramter_struct.alignedmode 	= TIMER_COUNTER_CENTER_DOWN;
+	timeoutTimer_paramter_struct.period		= 72000000 / 2 / TIMEOUT_FREQ;
+	timeoutTimer_paramter_struct.clockdivision 	= TIMER_CKDIV_DIV1;
 	timeoutTimer_paramter_struct.repetitioncounter 	= 0;
 	timer_auto_reload_shadow_disable(TIMER13);
 	timer_init(TIMER13, &timeoutTimer_paramter_struct);
@@ -132,21 +132,21 @@ void GPIO_init(void)
 	rcu_periph_clock_enable(RCU_GPIOF);
 
 	// Init green LED
-	gpio_mode_set(LED_GREEN_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_GREEN);	
+	gpio_mode_set(LED_GREEN_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_GREEN);
 	gpio_output_options_set(LED_GREEN_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, LED_GREEN);
 
 	// Init red LED
-	gpio_mode_set(LED_RED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_RED);	
+	gpio_mode_set(LED_RED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_RED);
 	gpio_output_options_set(LED_RED_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, LED_RED);
 
 	// Init orange LED
-	gpio_mode_set(LED_ORANGE_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_ORANGE);	
+	gpio_mode_set(LED_ORANGE_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LED_ORANGE);
 	gpio_output_options_set(LED_ORANGE_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, LED_ORANGE);
 
 	// Init UPPER/LOWER LED
-	gpio_mode_set(UPPER_LED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,UPPER_LED_PIN);	
+	gpio_mode_set(UPPER_LED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,UPPER_LED_PIN);
 	gpio_output_options_set(UPPER_LED_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, UPPER_LED_PIN);
-	gpio_mode_set(LOWER_LED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LOWER_LED_PIN);	
+	gpio_mode_set(LOWER_LED_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,LOWER_LED_PIN);
 	gpio_output_options_set(LOWER_LED_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, LOWER_LED_PIN);
 
 	// Init mosfet output
@@ -203,7 +203,7 @@ void GPIO_init(void)
 	gpio_af_set(TIMER_BLDC_YL_PORT, GPIO_AF_2, TIMER_BLDC_YL_PIN);
 
 	// Init self hold
-	gpio_mode_set(SELF_HOLD_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, SELF_HOLD_PIN);	
+	gpio_mode_set(SELF_HOLD_PORT , GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, SELF_HOLD_PIN);
 	gpio_output_options_set(SELF_HOLD_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, SELF_HOLD_PIN);
 
 	// Init USART0
@@ -445,7 +445,7 @@ void USART_MasterSlave_init(void)
 //----------------------------------------------------------------------------
 void USART_Steer_COM_init(void)
 {
-		// Enable ADC and DMA clock
+	// Enable ADC and DMA clock
 	rcu_periph_clock_enable(RCU_USART0);
 	rcu_periph_clock_enable(RCU_DMA);
 
