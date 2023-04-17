@@ -69,7 +69,7 @@ ErrStatus Watchdog_init(void)
 {
 	// Check if the system has resumed from FWDGT reset
 	if (RESET != rcu_flag_get(RCU_FLAG_FWDGTRST))
-	{ 
+	{
 		// FWDGTRST flag set
 		rcu_all_reset_flag_clear();
 	}
