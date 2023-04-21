@@ -200,6 +200,9 @@ $(BUILD_DIR):
 clean:
 	-rm -fR $(BUILD_DIR)
 
+read:
+	st-flash read firmware.bin 0x08000000 0x40000
+
 flash:	$(BUILD_DIR)/$(TARGET).bin
 	st-flash --reset write $(BUILD_DIR)/$(TARGET).bin 0x8000000
 
