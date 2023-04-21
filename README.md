@@ -1,6 +1,6 @@
 # GD32-hover-master-slave
 
-Based on Hoverboard-Firmware-Hack-Gen2
+Based on Hoverboard-Firmware-Hack-Gen2 https://github.com/flo199213/Hoverboard-Firmware-Hack-Gen2
 
 I added Makefile, Linker, startup, and Drivers
 
