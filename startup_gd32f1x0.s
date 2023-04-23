@@ -2,7 +2,7 @@
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
   *                - Set the vector table entries with the exceptions ISR address
-  *                - Configure the clock system 
+  *                - Configure the clock system
   *                - Branches to main in the C library (which eventually
   *                  calls main()).
   *            After Reset the Cortex-M3 processor is in Thread mode,
@@ -75,7 +75,7 @@ LoopFillZerobss:
   bcc FillZerobss
 
 /* Call the clock system intitialization function.*/
-    bl  SystemInit
+  bl  SystemInit
 /* Call static constructors */
 // nope no C++ code today
 //    bl __libc_init_array
@@ -203,22 +203,22 @@ g_pfnVectors:
 
 /*******************************************************************************
 *
-* Provide weak aliases for each Exception handler to the Default_Handler. 
-* As they are weak aliases, any function with the same name will override 
+* Provide weak aliases for each Exception handler to the Default_Handler.
+* As they are weak aliases, any function with the same name will override
 * this definition.
 *
 *******************************************************************************/
-    
-  .weak	NMI_Handler
+
+	.weak	NMI_Handler
 	.thumb_set NMI_Handler,Default_Handler
-	
-  .weak	HardFault_Handler
+
+	.weak	HardFault_Handler
 	.thumb_set HardFault_Handler,Default_Handler
-	
-  .weak	MemManage_Handler
+
+	.weak	MemManage_Handler
 	.thumb_set MemManage_Handler,Default_Handler
-	
-  .weak	BusFault_Handler
+
+	.weak	BusFault_Handler
 	.thumb_set BusFault_Handler,Default_Handler
 
 	.weak	UsageFault_Handler
@@ -358,7 +358,7 @@ g_pfnVectors:
 
 	.weak	SLCD_IRQHandler
 	.thumb_set SLCD_IRQHandler,Default_Handler
-	
+
 	.weak	DMA_Channel5_6_IRQHandler
 	.thumb_set DMA_Channel5_6_IRQHandler,Default_Handler
 
@@ -367,12 +367,12 @@ g_pfnVectors:
 
 	.weak	CAN1_TX_IRQHandler
 	.thumb_set CAN1_TX_IRQHandler,Default_Handler
-	
+
 	.weak	CAN1_RX0_IRQHandler
 	.thumb_set CAN1_RX0_IRQHandler,Default_Handler
 
 	.weak	CAN1_RX1_IRQHandler
 	.thumb_set CAN1_RX1_IRQHandler,Default_Handler
-	
+
 	.weak	CAN1_SCE_IRQHandler
 	.thumb_set CAN1_SCE_IRQHandler,Default_Handler

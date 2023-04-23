@@ -142,8 +142,8 @@
 // ADC buffer struct
 typedef struct
 {
-  uint16_t v_batt;
-	uint16_t current_dc;
+    uint16_t v_batt;
+    uint16_t current_dc;
 } adc_buf_t;
 
 #endif

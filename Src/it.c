@@ -38,7 +38,7 @@
 #include "../Inc/commsSteering.h"
 #include "../Inc/commsBluetooth.h"
 
-uint32_t msTicks;
+volatile uint32_t msTicks;
 uint32_t timeoutCounter_ms = 0;
 FlagStatus timedOut = SET;
 
@@ -204,13 +204,17 @@ uint32_t millis()
 //----------------------------------------------------------------------------
 void Delay (uint32_t dlyTicks)
 {
+/*
   uint32_t curTicks;
-
   curTicks = msTicks;
   while ((msTicks - curTicks) < dlyTicks)
 	{
 		__NOP();
 	}
+*/
+  uint32_t endTicks = msTicks + dlyTicks;
+  while (1) if (msTicks > endTicks) return;
+
 }
 
 //----------------------------------------------------------------------------

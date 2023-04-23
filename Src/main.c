@@ -1,6 +1,11 @@
 #define ARM_MATH_CM3
 
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include <math.h>
 #include "gd32f1x0.h"
+#include "gd32f1x0_gpio.h"
 
 #include "../Inc/setup.h"
 #include "../Inc/defines.h"
@@ -10,17 +15,18 @@
 #include "../Inc/commsMasterSlave.h"
 #include "../Inc/commsSteering.h"
 #include "../Inc/commsBluetooth.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include <math.h>
 
 
 void loop_delay(uint16_t ms)
 {
         volatile int count = 1000 * ms;
         while ( count-- );
+
+	//extern uint32_t msTicks;
+	//uint16_t end_ms = msTicks + ms;
+	//while (msTicks < end_ms);
 }
+
 
 void ShowBatteryState(uint32_t pin)
 {
@@ -81,9 +87,14 @@ int main (void)
 	ShowBatteryState(LED_RED);
 	loop_delay(100);
 	ShowBatteryState(LED_GREEN);
+	loop_delay(100);
 
-	Delay(100);
-//        fwdgt_counter_reload();
+	//gpio_bit_write(LED_GREEN_PORT, LED_GREEN, SET);
+	//loop_delay(100);
+        //gpio_bit_write(LED_GREEN_PORT, LED_GREEN, RESET);
+	//loop_delay(100);
+
+	// fwdgt_counter_reload();
   }
 }
 
