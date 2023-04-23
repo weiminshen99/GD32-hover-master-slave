@@ -83,6 +83,7 @@ int main (void)
   while(1) {
 
 	ShowBatteryState(LED_ORANGE);
+	Delay(100);
 	loop_delay(100);
 	ShowBatteryState(LED_RED);
 	loop_delay(100);
