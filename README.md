@@ -1,6 +1,7 @@
 # GD32-hover-master-slave
 
 Based on Hoverboard-Firmware-Hack-Gen2 https://github.com/flo199213/Hoverboard-Firmware-Hack-Gen2
+and https://github.com/gaucho1978/CHEAP-LAWNMOWER-ROBOT-FROM-HOVERBOARD
 
 This repository is for Makefile only. I added Makefile, Linker, startup, and Drivers for GD32.
 
