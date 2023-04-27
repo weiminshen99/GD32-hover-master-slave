@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
 	steps:
 	- name: arm-none-eabi-gcc
 	- uses: fiam/arm-none-eabi-gcc@v1
