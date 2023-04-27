@@ -14,8 +14,12 @@ jobs:
     steps:
     - name: arm-none-eabi-gcc
     - uses: fiam/arm-none-eabi-gcc@v1
-      run: make
+      with:
+        release: '9-2019-q4' # The arm-none-eabi-gcc release to use.
+  	- run: make
+		
     - name: make check
       run: make check
+			
     - name: make distcheck
       run: make distcheck
