@@ -14,6 +14,8 @@
 
 ######################################
 # Use your GCC_PATH here
+# The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
+# either it can be added to the PATH environment variable.
 #
 #GCC_PATH = /your_gcc_path
 GCC_PATH = /Applications/ARM_11.2/bin/
@@ -93,8 +95,6 @@ startup_gd32f1x0.s
 # binaries
 #######################################
 PREFIX = arm-none-eabi-
-# The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
-# either it can be added to the PATH environment variable.
 ifdef GCC_PATH
 CC = $(GCC_PATH)/$(PREFIX)gcc
 AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
