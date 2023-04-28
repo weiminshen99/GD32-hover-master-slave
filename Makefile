@@ -18,7 +18,7 @@
 # either it can be added to the PATH environment variable.
 #
 #GCC_PATH = /your_gcc_path
-GCC_PATH = /Applications/ARM_11.2/bin/
+#GCC_PATH = /Applications/ARM_11.2/bin/
 #
 ######################################
 
