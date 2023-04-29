@@ -474,6 +474,16 @@ int main (void)
 		SetEnable(SET);	// enable motor on SLAVE
 		SetPWM(250);	// testing BLDC on SLAVE
 
+#ifdef SLAVE_TEST_MOTOR
+
+                if (main_loop_counter % 100000 < 50000) {
+		  SetPWM(250);
+                } else {
+		  SetPWM(-250);
+                }
+
+#endif // end SLAVE_TEST_MOTO
+
 #endif // end SLAVE
 
 		main_loop_counter++;

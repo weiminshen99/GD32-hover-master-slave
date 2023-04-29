@@ -37,6 +37,7 @@
 
 //#define MASTER		// Select if firmware is for master or slave board
 #define SLAVE 			// Select if firmware is for master or slave board
+#define SLAVE_TEST_MOTOR	// Motor goes back and furth
 
 // ################################################################################
 
