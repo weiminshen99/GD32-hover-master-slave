@@ -344,6 +344,10 @@ int main (void)
 			SendSteerDevice();
 		}
 
+                #ifdef MASTER_TEST_SPEED
+ 		       speed = 3 * (ABS((      ((int32_t)steerCounter+100) % 400) - 200) - 100);
+                #endif
+
 		// Calculate expo rate for less steering with higher speeds
 		expo = MAP((float)ABS(speed), 0, 1000, 1, 0.5);
 
