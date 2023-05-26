@@ -1,0 +1,87 @@
+//defines the main program loop
+
+#define ARM_MATH_CM3
+
+#include "gd32f1x0.h"
+
+#include "../Inc/setup.h"
+#include "../Inc/defines.h"
+#include "../Inc/config.h"
+#include "../Inc/it.h"
+#include "../Inc/bldc.h"
+#include "../Inc/commsMasterSlave.h"
+#include "../Inc/commsRemote.h"
+#include "../Inc/commsSteeringPWM.h"
+#include "../Inc/commsInterlocks.h"
+#include "../Inc/commsBluetooth.h"
+#include "../Inc/commsAccelerometer.h"
+#include "../Inc/navigator.h"
+
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include <math.h>
+
+//----------------------------------------------------------------------------
+// MAIN function
+//----------------------------------------------------------------------------
+int main (void){
+
+  //SystemClock_Config();
+  SystemCoreClockUpdate();
+  SysTick_Config(SystemCoreClock / 100);
+
+	// Init watchdog
+	if (Watchdog_init() == ERROR)
+	{
+		// If an error accours with watchdog initialization do not start device
+		while(1);
+	}
+
+	// Init Interrupts
+	Interrupt_init();
+
+	// Init timeout timer
+	TimeoutTimer_init();
+
+	// Init GPIOs
+	GPIO_init();
+
+	// Activate self hold direct after GPIO-init
+	gpio_bit_write(SELF_HOLD_PORT, SELF_HOLD_PIN, SET);
+
+	// Init usart master slave
+	USART_MasterSlave_init();
+
+	// Init ADC
+	ADC_init();
+
+	// Init PWM
+	PWM_init();
+
+	// Device has 1,6 seconds to do all the initialization
+	// afterwards watchdog will be fired
+	fwdgt_counter_reload();
+
+	// Init remote usart
+	USART_REMOTE_COM_init();
+
+	//SetEnable(SET);
+	//SetSpeed(250);
+
+        gpio_bit_write(LED_RED_PORT, LED_RED, SET);
+
+  while(1)
+    {
+	ResetTimeout();
+
+	//Delay(DELAY_IN_MAIN_LOOP);
+        Delay(500);
+        gpio_bit_write(LED_RED_PORT, LED_RED, SET);
+        Delay(500);
+        gpio_bit_write(LED_RED_PORT, LED_RED, RESET);
+
+	// Reload watchdog (watchdog fires after 1,6 seconds)
+	fwdgt_counter_reload();
+    }
+}
